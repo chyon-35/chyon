@@ -1,0 +1,638 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nurul Islam Chyon — Generative AI Video Producer</title>
+<meta name="description" content="Nurul Islam Chyon is a cinematic AI director based in Dhaka, Bangladesh, making commercials and short films.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+<style>
+  :root {
+    color-scheme: light;
+    --bg:       #FAFAF9;
+    --ink:      #111111;
+    --body:     #444444;
+    --muted:    #888888;
+    --accent:   #C4302B;
+    --media:    #EEEDEA;
+    --rule:     #d4d4d4;
+    --rule-ico: #9ca3af;
+    --font: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--body);
+    font-family: var(--font);
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  img { max-width: 100%; }
+  h1, h2, h3 { margin: 0; text-wrap: balance; }
+  p { margin: 0; }
+  a { color: inherit; }
+
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  /* ---------- shell ---------- */
+
+  .shell {
+    margin: 0 auto;
+    max-width: 720px;
+    padding-inline: 24px;
+    padding-block: 48px 64px;
+    display: flex;
+    flex-direction: column;
+    gap: 80px;
+  }
+
+  /* ---------- header ---------- */
+
+  .masthead a {
+    display: block;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: 500;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  /* ---------- hero ---------- */
+
+  .hero h1 {
+    font-size: 1.875rem;
+    line-height: 1.15;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .hero h1 u {
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+  }
+  .hero .deck {
+    margin-top: 8px;
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    color: var(--body);
+  }
+  .hero .lede {
+    margin-top: 16px;
+    max-width: 720px;
+    font-size: 1rem;
+    line-height: 1.625;
+    color: var(--body);
+  }
+
+  /* ---------- section type ---------- */
+
+  .eyebrow {
+    font-size: 0.75rem;
+    line-height: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 500;
+    color: var(--accent);
+  }
+  .sec-title {
+    margin-top: 8px;
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .sec-title.solo { margin-top: 0; }
+
+  /* ---------- work ---------- */
+
+  .work-grid {
+    margin-top: 32px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .work-grid .full { grid-column: span 2; }
+  .work-grid .full .inner { max-width: 640px; margin: 0 auto; }
+
+  .card {
+    appearance: none;
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+  .card .frame {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 2px;
+    background: var(--media);
+  }
+  .card .frame img,
+  .card .frame video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .card .t {
+    display: block;
+    margin-top: 8px;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .card:hover .t { text-decoration: underline; text-underline-offset: 2px; }
+  .card .s {
+    display: block;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: var(--muted);
+  }
+
+  /* ---------- lightbox ---------- */
+
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: var(--bg);
+    overflow-y: auto;
+  }
+  .lightbox .pane {
+    margin: 0 auto;
+    max-width: 720px;
+    padding-inline: 24px;
+    padding-block: 48px;
+  }
+  .lightbox .close {
+    appearance: none;
+    border: 0;
+    padding: 0;
+    background: none;
+    font: inherit;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: var(--muted);
+    cursor: pointer;
+    transition: color 150ms;
+  }
+  .lightbox .close:hover {
+    color: var(--ink);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .lightbox .stage {
+    margin-top: 24px;
+    width: 100%;
+    max-width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 2px;
+    background: var(--media);
+  }
+  .lightbox .stage video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .lightbox h2 {
+    margin-top: 24px;
+    font-size: 1.5rem;
+    line-height: 2rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .lightbox dl { margin: 16px 0 0; }
+  .lightbox dt {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: var(--muted);
+  }
+  .lightbox dd {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    color: var(--ink);
+  }
+
+  /* ---------- workflow ---------- */
+
+  .flow-bleed {
+    margin-top: 64px;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+  }
+  .flow-inner {
+    margin: 0 auto;
+    max-width: 960px;
+    padding-inline: 24px;
+  }
+  .flow-row { display: none; align-items: flex-start; }
+  .flow-col { display: flex; flex-direction: column; }
+
+  .step { flex: 1 1 0%; min-width: 0; text-align: left; }
+  .step .head { display: flex; align-items: center; gap: 8px; }
+  .step .head svg { width: 16px; height: 16px; flex-shrink: 0; color: var(--muted); }
+  .step .num {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 500;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+  .step h3 {
+    margin-top: 8px;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .step p {
+    margin-inline: 4px;
+    font-size: 0.875rem;
+    line-height: 1.625;
+    color: var(--body);
+  }
+
+  .link-h {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 72px;
+    padding-top: 2px;
+  }
+  .link-h .bar { height: 1px; width: 24px; background: var(--rule); }
+  .link-v {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+    padding-block: 4px;
+  }
+  .link-v .bar { width: 1px; height: 20px; background: var(--rule); }
+  .link-h svg, .link-v svg { width: 16px; height: 16px; color: var(--rule-ico); }
+
+  .flow-col .step { margin-bottom: 16px; }
+
+  @media (min-width: 900px) {
+    .flow-row { display: flex; }
+    .flow-col { display: none; }
+  }
+
+  /* ---------- about ---------- */
+
+  .about-grid {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    align-items: stretch;
+  }
+  .about-grid .portrait { overflow: hidden; border-radius: 2px; }
+  .about-grid .portrait img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .about-grid .prose {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+  }
+  .about-grid .prose p {
+    font-size: 1rem;
+    line-height: 1.625;
+    color: var(--body);
+  }
+
+  /* ---------- contact ---------- */
+
+  .contact .intro {
+    margin-top: 16px;
+    max-width: 576px;
+    font-size: 1rem;
+    line-height: 1.625;
+    color: var(--body);
+  }
+  .contact dl {
+    margin: 24px 0 0;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 12px;
+    row-gap: 8px;
+    align-items: baseline;
+  }
+  .contact dt {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: var(--muted);
+  }
+  .contact dd { margin: 0; min-width: 0; }
+  .contact dd a {
+    font-size: 1rem;
+    line-height: 1.5rem;
+    color: var(--ink);
+    text-decoration: none;
+    overflow-wrap: anywhere;
+    transition: color 150ms;
+  }
+  .contact dd a:hover { color: var(--accent); }
+
+  /* ---------- footer ---------- */
+
+  .colophon p {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--muted);
+  }
+
+  /* ---------- breakpoints ---------- */
+
+  @media (min-width: 768px) {
+    .hero h1 { font-size: 2.25rem; }
+    .sec-title { font-size: 1.5rem; line-height: 2rem; }
+    .about-grid { grid-template-columns: 2fr 3fr; }
+    .about-grid .prose { padding-left: 16px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <header class="masthead">
+    <a href="#top">Nurul Islam Chyon</a>
+  </header>
+
+  <section class="hero" id="top">
+    <h1>AI <u>Director</u></h1>
+    <p class="deck">Commercials and short films</p>
+    <p class="lede">Every film starts with a story. The concept, the characters and the final cut are built in one place, so the idea that goes in is the film that comes out.</p>
+  </section>
+
+  <section id="work">
+    <p class="eyebrow">Selected projects</p>
+    <h2 class="sec-title">Featured Work</h2>
+    <div class="work-grid" id="work-grid"></div>
+  </section>
+
+  <section id="behind-the-build">
+    <p class="eyebrow">Workflow</p>
+    <h2 class="sec-title">Behind the Build</h2>
+    <div class="flow-bleed">
+      <div class="flow-inner">
+        <div class="flow-row" id="flow-row"></div>
+        <div class="flow-col" id="flow-col"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about">
+    <h2 class="sec-title solo">About Me</h2>
+    <div class="about-grid">
+      <div class="portrait">
+        <img src="media/portrait.jpg" alt="Portrait of Nurul Islam Chyon" loading="lazy">
+      </div>
+      <div class="prose">
+        <p>Nurul Islam Chyon is a cinematic AI director based in Dhaka, Bangladesh. Every stage of a project is handled personally, from writing the story to the final grade.</p>
+        <p>The work is built on one idea. A film made with AI should still feel like a film, so the storyboard is treated as the real work and the tools are treated as tools.</p>
+        <p>A background in music production shapes how sound is used in every piece.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="contact">
+    <h2 class="sec-title solo">Contact</h2>
+    <p class="intro">Available for commercials, short films and brand campaigns. Open to freelance projects and full-time remote roles.</p>
+    <dl>
+      <dt>Email</dt>
+      <dd><a href="mailto:nicchyon35@gmail.com">nicchyon35@gmail.com</a></dd>
+      <dt>LinkedIn</dt>
+      <dd><a href="https://www.linkedin.com/in/nurul-islam-chyon/" target="_blank" rel="noopener noreferrer">linkedin.com/in/nurul-islam-chyon</a></dd>
+      <dt>WhatsApp</dt>
+      <dd><a href="https://wa.me/8801725852732" target="_blank" rel="noopener noreferrer">Message directly</a></dd>
+    </dl>
+  </section>
+
+  <footer class="colophon">
+    <p>&copy; <span id="year"></span> Nurul Islam Chyon</p>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ------------------------------------------------------------------
+     YOUR FILMS
+     Put each .mp4 in the media folder, then make sure the "video" line
+     below matches the file name exactly. Capital letters matter.
+     "thumbnail" is optional - leave it as "" and the page will use
+     frame 3 of the film as the cover instead.
+     ------------------------------------------------------------------ */
+
+  var PROJECTS = [
+    {
+      title: "In Our Minds",
+      subtitle: "Cinematic AI Short",
+      thumbnail: "media/in-our-minds.jpg",
+      video: "media/01-in-our-minds.mp4",
+      tools: ["Google Omni", "Hailou Ai Voice", "Capcut"],
+      layout: "half"
+    },
+    {
+      title: "Nostalgia",
+      subtitle: "AI Commercial",
+      thumbnail: "media/nostalgia.jpg",
+      video: "media/02-nostalgia.mp4",
+      tools: ["Kling 3.0", "Nano Banana pro", "Capcut"],
+      layout: "half"
+    },
+    {
+      title: "Hyper Headphone",
+      subtitle: "AI Commercials",
+      thumbnail: "media/hyper-headphone.jpg",
+      video: "media/03-hyper-headphone.mp4",
+      tools: ["Seedance 2.5", "Capcut"],
+      layout: "full",
+      thumbnailTime: 3
+    },
+    {
+      title: "Drinko Chill",
+      subtitle: "AI Commercial",
+      thumbnail: "media/drinko-chill.jpg",
+      video: "media/04-drinko-chill.mp4",
+      tools: ["Seedance 2.5", "SunoAi", "Capcut"],
+      layout: "half",
+      thumbnailTime: 3
+    },
+    {
+      title: "Toothpaste",
+      subtitle: "AI Commercial",
+      thumbnail: "media/toothpaste.jpg",
+      video: "media/05-toothpaste.mp4",
+      tools: ["Seedance 2.5", "Suno AI", "Capcut"],
+      layout: "half",
+      thumbnailTime: 3
+    }
+  ];
+
+  var STEPS = [
+    { number: "01", icon: "pen",     title: "Story",      description: "Concept, script, structure" },
+    { number: "02", icon: "face",    title: "Elements",   description: "Characters, locations, props" },
+    { number: "03", icon: "grid",    title: "Storyboard", description: "Every frame as a still image" },
+    { number: "04", icon: "clapper", title: "Motion",     description: "Shot by shot animation" },
+    { number: "05", icon: "film",    title: "Edit",       description: "Cutting, sound, colour, grade" }
+  ];
+
+  var ICONS = {
+    pen: '<path d="M12 20h9"/><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/>',
+    face: '<circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/>',
+    grid: '<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>',
+    clapper: '<path d="M20.2 6 3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1.1-.3 2.2.3 2.5 1.3Z"/><path d="m6.2 5.3 3.1 3.9"/><path d="m12.4 3.4 3.1 4"/><path d="M3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/>',
+    film: '<rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 3v18"/><path d="M3 7.5h4"/><path d="M3 12h18"/><path d="M3 16.5h4"/><path d="M17 3v18"/><path d="M17 7.5h4"/><path d="M17 16.5h4"/>',
+    arrowRight: '<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
+    arrowDown: '<path d="M12 5v14"/><path d="m19 12-7 7-7-7"/>'
+  };
+
+  function svg(name) {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" ' +
+           'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICONS[name] + '</svg>';
+  }
+
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+    });
+  }
+
+  /* ----- work grid ----- */
+
+  var grid = document.getElementById("work-grid");
+
+  PROJECTS.forEach(function (p) {
+    var cell = document.createElement("div");
+    if (p.layout === "full") cell.className = "full";
+
+    var media = p.thumbnail
+      ? '<img src="' + esc(p.thumbnail) + '" alt="Still from ' + esc(p.title) + '" loading="lazy">'
+      : '<video src="' + esc(p.video + (p.thumbnailTime ? "#t=" + p.thumbnailTime : "")) +
+        '" muted preload="metadata" playsinline></video>';
+
+    var button =
+      '<button type="button" class="card">' +
+        '<span class="frame">' + media + '</span>' +
+        '<span class="t">' + esc(p.title) + '</span>' +
+        '<span class="s">' + esc(p.subtitle) + '</span>' +
+      '</button>';
+
+    cell.innerHTML = p.layout === "full"
+      ? '<div class="inner">' + button + '</div>'
+      : button;
+
+    cell.querySelector("button").addEventListener("click", function () { open(p); });
+    grid.appendChild(cell);
+  });
+
+  /* ----- workflow ----- */
+
+  function stepHTML(s) {
+    return '<div class="step">' +
+             '<div class="head">' + svg(s.icon) + '<span class="num">' + esc(s.number) + '</span></div>' +
+             '<h3>' + esc(s.title) + '</h3>' +
+             '<p>' + esc(s.description) + '</p>' +
+           '</div>';
+  }
+
+  var row = document.getElementById("flow-row");
+  var col = document.getElementById("flow-col");
+
+  STEPS.forEach(function (s, i) {
+    row.insertAdjacentHTML("beforeend", stepHTML(s));
+    col.insertAdjacentHTML("beforeend", stepHTML(s));
+    if (i < STEPS.length - 1) {
+      row.insertAdjacentHTML("beforeend",
+        '<div class="link-h" aria-hidden="true"><span class="bar"></span>' + svg("arrowRight") + '</div>');
+      col.insertAdjacentHTML("beforeend",
+        '<div class="link-v" aria-hidden="true"><span class="bar"></span>' + svg("arrowDown") + '</div>');
+    }
+  });
+
+  /* ----- lightbox ----- */
+
+  var box = null;
+  var lastFocus = null;
+
+  function close() {
+    if (!box) return;
+    box.remove();
+    box = null;
+    document.body.style.overflow = "";
+    document.removeEventListener("keydown", onKey);
+    if (lastFocus) lastFocus.focus();
+  }
+
+  function onKey(e) { if (e.key === "Escape") close(); }
+
+  function open(p) {
+    close();
+    lastFocus = document.activeElement;
+
+    box = document.createElement("div");
+    box.className = "lightbox";
+    box.setAttribute("role", "dialog");
+    box.setAttribute("aria-modal", "true");
+    box.setAttribute("aria-label", p.title);
+
+    box.innerHTML =
+      '<div class="pane">' +
+        '<button type="button" class="close">Close</button>' +
+        '<div class="stage">' +
+          '<video src="' + esc(p.video) + '" controls autoplay playsinline preload="auto"></video>' +
+        '</div>' +
+        '<h2>' + esc(p.title) + '</h2>' +
+        '<dl><dt>Tool</dt><dd>' + esc((p.tools || []).join(", ")) + '</dd></dl>' +
+      '</div>';
+
+    box.addEventListener("click", close);
+    box.querySelector(".pane").addEventListener("click", function (e) { e.stopPropagation(); });
+    box.querySelector(".close").addEventListener("click", close);
+
+    document.body.appendChild(box);
+    document.body.style.overflow = "hidden";
+    document.addEventListener("keydown", onKey);
+    box.querySelector(".close").focus();
+  }
+
+  document.getElementById("year").textContent = new Date().getFullYear();
+})();
+</script>
+</body>
+</html>
